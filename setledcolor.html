@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-analytics.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AAAAAAAAAAAAAAAAA",
+        authDomain: "firstapp-iot.firebaseapp.com",
+        databaseURL: "https://firstapp-iot.firebaseio.com",
+        projectId: "firstapp-iot",
+        storageBucket: "firstapp-iot.appspot.com",
+        messagingSenderId: "88888888888",
+        appId: "1:88888888888:web:4444444444444444444",
+        measurementId: "G-HHHHHHHH"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
+
+    <script type="text/javascript">
+      initApp = function() {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+             // User is signed in.
+             var uid = user.uid;
+             var sub8 = uid.substring(0, 8); 
+             if (sub8 != "VcEEeSUB") {
+               alert("You are not authorized to this page.");
+               firebase.auth().signOut();
+             }
+          } else {
+            // User is signed out.
+            window.location.replace("nodemcu.html");
+          }
+        }, function(error) {
+          console.log(error);
+        });
+      };
+
+      window.addEventListener('load', function() {
+        initApp()
+      });
+    </script>
+
+    <script>
+    function setledcolorSignout() {
+       firebase.auth().signOut();
+       // User is signed out.
+       window.location.replace("nodemcu.html");
+    }
+    </script>
+
+    <script>
+    function setledon() {
+    firebase.database().ref("device/led_control/LED1")
+      .once("value", snapshot => {
+      if (snapshot.exists()){
+        console.log("exists!");
+        // Get a reference to the Firebase database entry at the given key.
+        var dbRef = firebase.database().ref("device/led_control");
+        // The config object we want to write.
+        var config = {
+          LED1: 1,
+          LED2: 1,
+        };
+        // Write the config to the database.
+        dbRef
+          .update(config)
+          .then(function() {
+            console.log('Success!');
+            document.getElementById("printled").innerHTML = "LED1=" + config.LED1 + " , LED2=" + config.LED2;
+            document.getElementById("showled").innerHTML = "<img src='ledon.jpg' />" + "   " + "<img src='ledon.jpg' />" ;
+          })
+          .catch(function(error) {
+            console.log('Error: ' + error.message);
+          });
+      } else {
+         alert("Something wrong when connect database.");
+      }
+    });
+    }
+
+    function setledoff() {
+    firebase.database().ref("device/led_control/LED1")
+      .once("value", snapshot => {
+      if (snapshot.exists()){
+        console.log("exists!");
+        // Get a reference to the Firebase database entry at the given key.
+        var dbRef = firebase.database().ref("device/led_control");
+        // The config object we want to write.
+        var config = {
+          LED1: 0,
+          LED2: 0,
+        };
+        // Write the config to the database.
+        dbRef
+          .update(config)
+          .then(function() {
+            console.log('Success!');
+            document.getElementById("printled").innerHTML = "LED1=" + config.LED1 + " , LED2=" + config.LED2;
+            document.getElementById("showled").innerHTML = "<img src='ledoff.jpg' />" + "   " + "<img src='ledoff.jpg' />" ;
+          })
+          .catch(function(error) {
+            console.log('Error: ' + error.message);
+          });
+      } else {
+         alert("Something wrong when connect database.");
+      }
+    });
+    }
+
+    function setledcolor(vcolor) {
+    firebase.database().ref("device/led_control/LEDCOLOR")
+      .once("value", snapshot => {
+      if (snapshot.exists()){
+        console.log("exists!");
+        // Get a reference to the Firebase database entry at the given key.
+        var dbRef = firebase.database().ref("device/led_control");
+        // The config object we want to write.
+        var config = {
+          LEDCOLOR: vcolor,
+        };
+        // Write the config to the database.
+        dbRef
+          .update(config)
+          .then(function() {
+            console.log('Success!');
+            document.getElementById("printledcolor").innerHTML = "LED3 COLOR = " + config.LEDCOLOR;
+          })
+          .catch(function(error) {
+            console.log('Error: ' + error.message);
+          });
+      } else {
+         alert("Something wrong when connect database.");
+      }
+    });
+    }
+    </script>
+
+    <style media="screen">
+      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
+      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
+      #message h1 { font-size: 22px; font-weight: bold; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+      #message p { line-height: 100%; margin: 16px 0 24px; font-size: 14px; }
+      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
+      @media (max-width: 600px) {
+        body, #message { margin-top: 0; background: white; box-shadow: none; }
+        body { border-top: 16px solid #ffa100; }
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div id="message">
+      <center>
+      <h1>Firstapp-IoT Project</h1>
+      <h2>NodeMCU ESP8266</h2>
+      <p>Turn on/off<img src=led.jpg width="15%">LED1 and LED2</p>
+      <p>LED1,2:
+      <button onclick="setledon();">Set LED On</button>
+      <button onclick="setledoff();">Set LED Off</button>
+      <p id="printled"></p>
+      <p id="showled"></p>
+      <p>Change LED3 color</p>
+      <p>LED3:
+      <button onclick="setledcolor('RED');"> RED </button>
+      <button onclick="setledcolor('GREEN');"> GREEN </button>
+      <button onclick="setledcolor('BLUE');"> BLUE </button>
+      <p id="printledcolor"></p>
+      <button onclick="setledcolorSignout();">Sign out</button>
+      </center>
+    </div>
+
+  </body>
+</html>
