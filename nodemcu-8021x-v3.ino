@@ -13,7 +13,7 @@ String xcolor = "WHITE";
 
 //-------- WiFi config --------
 // SSID to connect to
-static const char* ssid = "PSU WiFi (802.1x)";
+static const char* ssid = "802.1x";
 // Username for authentification
 static const char* username = "your_user";
 // Password for authentification
